@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color= "primary">
+    <ion-title > Bici Destino - Bluetooth</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-button id="btn" expand="full" color="tertiary" href="../home">Siguiente</ion-button>
+  
+<!--bluetooth-->
+<div class="primerDiv">
+  <ion-button ion-button class="submit-button" expand="full" color="secondary" (click)="listardispositivoos()">
+    <ion-icon name="refresh"></ion-icon>&nbsp;Buscar dispositivos
+  </ion-button>
+          <ion-row>
+            <ion-col>
+              <ion-list [(ngModel)]="emparejarIDdispositivo" *ngIf="listarToggle">
+                <ion-radio-group>
+                <ion-item *ngFor="let i of disposemparejadoslist; let j=index">
+                  <ion-label>{{i.name}}</ion-label>
+                  <ion-radio value="{{j}}"></ion-radio>   
+                </ion-item>
+              </ion-radio-group>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+  </div>
+  </ion-content>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <ion-button expand="full" color="primary" *ngIf="listarToggle" (click)="selecionarDispositivo()">
+            <ion-icon name="bluetooth"></ion-icon>&nbsp;Conectar dispositivo
+          </ion-button>
+        </div>
+        <div class="col">
+          <ion-button expand="full" color="medium" (click)="diviceDescaonectado()">
+            <ion-icon></ion-icon>&nbsp;Desconectar dispositivo
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </footer>

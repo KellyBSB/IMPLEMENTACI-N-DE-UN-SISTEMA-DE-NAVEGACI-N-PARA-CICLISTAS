@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color= "primary">
+    <ion-title > Bici Destino - Direciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="card mb-3">
+    <img src="../../assets/bici-destino.png" class="img-fluid" alt="Imagen de la app">
+  </div>
+
+  <table class="table">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Direción Corta</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{mensajecorto}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+
+</ion-content>
+
+
+<footer>
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+    <ion-button expand="full"  color="primary" (click)="activarComienzo()">Comenzar</ion-button>
+        
+      </div>
+      <div class="col">
+  <ion-button expand="full"  color="medium" (click)='cancelar()' routerLink="../home">Cancelar</ion-button>
+        
+      </div>
+    </div>
+  </div>  
+
+</footer>

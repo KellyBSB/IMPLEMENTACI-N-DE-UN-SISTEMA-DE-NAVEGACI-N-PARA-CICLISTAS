@@ -1,0 +1,8 @@
+{
+    "/maps/api/*":{
+        "target":"https://maps.googleapis.com",
+        "secure":false,
+        "logLevel":"debug",
+        "changeOrigin":true
+    }
+}
