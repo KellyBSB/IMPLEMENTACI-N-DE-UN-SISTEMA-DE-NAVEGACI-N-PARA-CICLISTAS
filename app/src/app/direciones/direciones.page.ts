@@ -167,26 +167,26 @@ export class DirecionesPage implements OnDestroy {
                 this.aStringdiferentes1 = JSON.stringify(steps[this.contador].html_instructions).includes(" Take the pedestrian overpass");
 
                 //condicionales para el envio de datos por bluetooth
-                if ((this.aStringdiferentes || this.aStringdiferentes1) && !this.enviodatos) {
+                if ((this.aStringdiferentes || this.aStringdiferentes1 ) && !this.enviodatos) {
                   this.mensajecorto = "Mire el telefono";
-                  this.setData4();
+                  this.setData4();               
                   this.enviodatos = true;
                 }
                 if (this.aStringcominzo && !this.enviodatos) {
                   this.mensajecorto = "Siga recto";
-                  this.setData3();
+                  this.setData2();               
                   this.enviodatos = true;
                 }
-                if (this.aStringDerecha && !this.enviodatos) {
-                  this.mensajecorto = "Gire a la derecha";
-                  this.setData();
-                  this.enviodatos = true;
-                }
-                if (this.aStringIzquierda && !this.enviodatos) {
-                  this.mensajecorto = "Gire a la izquierda";
-                  this.setData1();
-                  this.enviodatos = true;
-                }
+                  if (this.aStringDerecha && !this.enviodatos) {
+                    this.mensajecorto = "Gire a la derecha";
+                    this.setData();               
+                    this.enviodatos = true;
+                  }
+                  if (this.aStringIzquierda && !this.enviodatos) {
+                    this.mensajecorto = "Gire a la izquierda";
+                    this.setData1();             
+                    this.enviodatos = true;
+                  }
 
 
                 if (posicion.rows[0].elements[0].distance.value < 30) {

@@ -14,13 +14,11 @@ import { BackgroundMode } from '@ionic-native/background-mode/ngx';
   templateUrl: './bluetooth.page.html',
   styleUrls: ['./bluetooth.page.scss'],
 })
-export class BluetoothPage{
-  //variables a utilizar
+export class BluetoothPage implements OnInit {
   disposemparejadoslist:pairedlist;
   listarToggle:boolean = false;
   emparejarIDdispositivo:number=0;
   enviardatos:string="";
-  //el constructor de toda la app
   constructor(
     private bluetoothSerial: BluetoothSerial, 
     private alertController:AlertController,
@@ -32,43 +30,37 @@ export class BluetoothPage{
  this.backgroundMode.disableWebViewOptimizations();
  this.backgroundMode.enable();
  this.backgroundMode.setEnabled(true);
- //presenta la alerta
     this.presentAlert();
-    //al iniciar la app verfica que el bluetooth este prendido
     this.versielBlueestaprendido();
 
 
   }
-  
-//manda un mensaje de manera emergerte
+
+  ngOnInit() {
+  }
+
   async presentAlert() {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Inicar',
-      message: 'Empareje con los sensores Bluetooth para inicar',
+      message: 'Empareje con el chaleco para inicar',
       buttons: ['ok']
     });
 
     await alert.present();
   }
   
-  //funcion llamada desde un boton para ir a otra ventana
   iraruta(){
     
       this.router.navigate(['/home']);
   }
-
-
   /*************************************************************/
-     /*BlUETOOTH  */
-  ////////////////////////////////////////
-
     //activar bluetooth
     versielBlueestaprendido(){
       this.bluetoothSerial.isEnabled().then(success=>{
         this.listardispositivoos();
       },error =>{
-        this.mirarmensaje("active el bluetooth plox =D");
+        this.mirarmensaje("Active el bluetooth del teléfono celular por favor");
       }
       );
     }
@@ -79,7 +71,7 @@ export class BluetoothPage{
       this.disposemparejadoslist = success;
       this.listarToggle = true;
     }, error=>{
-      this.mirarmensaje("active el bluetooth plox =D");
+      this.mirarmensaje("Active el bluetooth por favor");
       this.listarToggle=false;
     }
     
@@ -104,7 +96,6 @@ async mirarmensaje(mensaje){
   });
   toast.present()}
 
-  //PERMITE selecionar algun dispositivo que se musetre en pantalla
   selecionarDispositivo(){
     let conectarDispo = this.disposemparejadoslist[this.emparejarIDdispositivo];
     if(!conectarDispo.address){
@@ -117,7 +108,6 @@ async mirarmensaje(mensaje){
     this.connect(address);
   }
 
-  //conecta al dispositivo
   connect(address){
     this.bluetoothSerial.connect(address).subscribe(success =>{
         this.divaceConnected();
@@ -125,28 +115,24 @@ async mirarmensaje(mensaje){
         localStorage.setItem('permitir',this.enviardatos);
         this.mirarmensaje("Conexion con el dispositivo");
     }, error=>{
-      this.mirarerror("Error en la conexion con el dispositivo </3");
+      this.mirarerror("Error en la conexión con el dispositivo");
   
     });
   }
 
-  //verufuca el dispositivo vinculado
   divaceConnected(){
     this.bluetoothSerial.subscribe('/n').subscribe(success=>{
       this.handleData(success);
-      this.mirarmensaje("conexion correcta con el dispositivo"); 
+      this.mirarmensaje("Conexión correcta con el dispositivo"); 
     }, error=>{
       this.mirarerror(error)
     });
   }
-
-  //desconecta al dispositivo vinculado
   diviceDescaonectado(){
     this.bluetoothSerial.disconnect();  
-    this.mirarmensaje("dispositivo desconectado");
+    this.mirarmensaje("Dispositivo desconectado");
   }
   
-  //ayuda al menejo de datos
   handleData(valiue){
     this.mirarmensaje(valiue);
     console.log(valiue);

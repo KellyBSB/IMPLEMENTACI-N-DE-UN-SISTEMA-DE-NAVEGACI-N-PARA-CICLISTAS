@@ -23,7 +23,7 @@ import {Welcome3} from '../modelos/dentrodeldistrito-interface';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage {
 
   //variable del mapa
   mapRef = null;
@@ -61,18 +61,16 @@ this.backgroundMode.disableWebViewOptimizations();
 this.backgroundMode.enable();
 this.backgroundMode.setEnabled(true);
 
-//borrar storage que exista
-localStorage.clear();
-    
+this.presentAlert()
   }
 
   //ver cuando se cargo la pagina e inicializar otros eventos
   //una vez que se cargo todo  no lo vuelve a cargar
-  async ngOnInit() {
-    this.presentAlert()
+  async  ionViewDidEnter() {
+    //borrar storage que exista
+  localStorage.clear();
    await this.loadMap();
   }
-
   //ventana emergente
   async presentAlert() {
     const alert = await this.alertController.create({
