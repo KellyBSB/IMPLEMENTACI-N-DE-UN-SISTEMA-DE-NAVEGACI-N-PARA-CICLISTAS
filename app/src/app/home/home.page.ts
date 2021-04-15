@@ -61,6 +61,7 @@ this.backgroundMode.disableWebViewOptimizations();
 this.backgroundMode.enable();
 this.backgroundMode.setEnabled(true);
 
+
 this.presentAlert()
   }
 
@@ -71,6 +72,7 @@ this.presentAlert()
   localStorage.clear();
    await this.loadMap();
   }
+
   //ventana emergente
   async presentAlert() {
     const alert = await this.alertController.create({

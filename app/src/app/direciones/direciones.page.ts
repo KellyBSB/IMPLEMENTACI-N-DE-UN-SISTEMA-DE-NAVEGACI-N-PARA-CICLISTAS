@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 //importo el servicio de api rest
 import { ApiRestGoogleService } from '../servicios/api-rest-google.service'
@@ -7,12 +8,15 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 //alertas
 import { AlertController, ToastController } from '@ionic/angular';
+//interface
+import { pairedlist } from '../modelos/listarBluetooth-interface';
 
 //segundo plano
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 //interface de ubicacion actual
 import { Welcome1 } from '../modelos/json-interface-ubicacionActual';
-
+//variable de google
+declare var google: any;
 @Component({
   selector: 'app-direciones',
   templateUrl: './direciones.page.html',
@@ -20,27 +24,30 @@ import { Welcome1 } from '../modelos/json-interface-ubicacionActual';
 })
 export class DirecionesPage implements OnDestroy {
 
+  disposemparejadoslist: pairedlist;
+  listarToggle: boolean = false;
+  emparejarIDdispositivo: number = 0;
+  enviardatos: string = "";
+  tiempo;
+  contadorblue = 0;
 
-  //enviar datos
-  enviodatos: boolean;
-  //cambiar la ruta en el mapa
+//enviar datos
+enviodatos:boolean;
+
+  //cam,biar la ruta en el mapa
   camRuta: string = "puedecambiar";
 
-  //variables para los mensajes de las dirreciones
   aString: any;
   aStringDerecha: any;
   aStringIzquierda: any;
-  aStringcominzo: any;
-  aStringdiferentes: any;
-  aStringdiferentes1: any;
-
-  //datos de la pagian home
+  aStringcominzo:any;
+  aStringdiferentes:any;
+  aStringdiferentes1:any;
+  
   latitudOrigen: number;
   longitudOrigen: number;
   latitudDestino: number;
   longitudDestino: number;
-
-  //variables para el manedo de datos
 
   public instruciones: any = [];
 
@@ -52,7 +59,7 @@ export class DirecionesPage implements OnDestroy {
 
   private sub$: any;
 
-  public externalposicion: any = [];
+  public externalposicion : any = [];
 
 
   //dispositivo conectado a bluetooth para empezar
@@ -61,17 +68,19 @@ export class DirecionesPage implements OnDestroy {
   lat: any;
   lng: any;
 
+  numDireciones: number;
+  num1: number;
+  num2: number;
+  time: any;
+  metrosAvansados: number = 0;
+
   //dejar comenzar
   buttonDisabledDireciones: string;
   buttonDisabled: boolean = true;
 
-  contadorexterno: any;
-  desactivar = true;
+  contadorexterno:any;
+  desactivar=true;
   mensajecorto: string;
-
-
-  //constructor
-
   constructor(
 
     private apiServices: ApiRestGoogleService,
@@ -87,16 +96,14 @@ export class DirecionesPage implements OnDestroy {
     this.backgroundMode.disableWebViewOptimizations();
     this.backgroundMode.enable();
     this.backgroundMode.setEnabled(true);
-
+    
   }
 
-
-  //recargar la pagina cada que se entre
   ionViewDidEnter() {
+
     this.sedebeIniciar();
   }
 
-  //verificar si hay datos para comenzar la ruta
   sedebeIniciar() {
     const lat0 = localStorage.getItem('latitudOrigen');
     const lng0 = localStorage.getItem('longitudOrigen');
@@ -115,7 +122,7 @@ export class DirecionesPage implements OnDestroy {
       console.log(" destino " + this.longitudDestino);
 
       console.log("Resive datos");
-    } else {
+    }else{
       this.mirarmensaje("Selecione una ruta");
     }
   }
@@ -135,7 +142,7 @@ export class DirecionesPage implements OnDestroy {
     }
   }
 
-//segunda funcion a llamar para comparar los puntos de toda la ruta
+
   async startProceso(steps: any) {
     this.loop = setInterval(() => {
 
@@ -166,7 +173,7 @@ export class DirecionesPage implements OnDestroy {
                 //peatones
                 this.aStringdiferentes1 = JSON.stringify(steps[this.contador].html_instructions).includes(" Take the pedestrian overpass");
 
-                //condicionales para el envio de datos por bluetooth
+               
                 if ((this.aStringdiferentes || this.aStringdiferentes1 ) && !this.enviodatos) {
                   this.mensajecorto = "Mire el telefono";
                   this.setData4();               
@@ -187,18 +194,18 @@ export class DirecionesPage implements OnDestroy {
                     this.setData1();             
                     this.enviodatos = true;
                   }
-
-
+                
+            
                 if (posicion.rows[0].elements[0].distance.value < 30) {
-                  if ((this.contador == steps.length - 1) && posicion.rows[0].elements[0].distance.value < 5) {
+                  if (this.contador == steps.length - 1) {
                     this.mensajecorto = "Llego a su destino";
                     this.setData3();
                     localStorage.clear();
                   }
-                  this.enviodatos = false;
+                  this.enviodatos=false;
                   this.contador++;
                 }
-
+                
               }
 
             }
@@ -212,7 +219,7 @@ export class DirecionesPage implements OnDestroy {
   }
 
 
-//primera funcion a llamar para obtener la ruta
+
   async getDtosApiGoogleDireciones() {
     this.mirarmensaje("Comienzo de ruta");
     const latlng = await this.getLocation();
@@ -227,7 +234,6 @@ export class DirecionesPage implements OnDestroy {
 
   }
 
-  //funcion para obtener la posicion actual de usuario
   private async getLocation(): Promise<any> {
     //mapa 
     const rta = await this.geolocation.getCurrentPosition();
@@ -238,11 +244,9 @@ export class DirecionesPage implements OnDestroy {
     };
   }
 
-  //bboton que ayudara a cancelar al comienzo sw la ruta
   cancelar() {
     clearInterval(this.loop);
-    this.aString = "";
-    this.mensajecorto = "";
+    this.mensajecorto ="";
     //borra todo en local storage
     localStorage.clear();
     this.mirarmensaje("Se cancelo la ruta");
@@ -251,10 +255,8 @@ export class DirecionesPage implements OnDestroy {
 
 
   /*************************************************************/
-  //bluetooth
-/************************************************* */
+  //activar bluetooth
 
-//envio de datos por bluetooth
 
   //mensaje de error
   async mirarerror(error) {
@@ -275,7 +277,6 @@ export class DirecionesPage implements OnDestroy {
     toast.present()
   }
 
-//envio de letrar a los sensores
 
   setData() {
 
@@ -311,16 +312,16 @@ export class DirecionesPage implements OnDestroy {
       console.log("error envio letra c")
     });
   }
-  setData3() {
+    setData3(){
 
-    this.bluetoothSerial.write("d").then(Response => {
-      this.mirarmensaje(Response);
-    }, error => {
-      this.mirarerror(error);
-      console.log("error envio letra d")
-    });
+      this.bluetoothSerial.write("d").then(Response => {
+        this.mirarmensaje(Response);
+      }, error => {
+        this.mirarerror(error);
+        console.log("error envio letra d")
+      });
   }
-  setData4() {
+  setData4(){
 
     this.bluetoothSerial.write("e").then(Response => {
       this.mirarmensaje(Response);
@@ -328,7 +329,7 @@ export class DirecionesPage implements OnDestroy {
       this.mirarerror(error);
       console.log("error envio letra e ")
     });
-  }
+}
   ngOnDestroy() {
     //el componete no busque datos no consuma datos
     if (this.loop) {

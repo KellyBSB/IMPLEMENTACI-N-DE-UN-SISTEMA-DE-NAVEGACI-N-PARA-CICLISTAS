@@ -94,7 +94,6 @@ export class PosicionPage {
     this.lng=(myLatng.lng).toFixed(5);
   }
 
-  //obtener el nombre de las calles de la posicion actual
   async getNombreCalles(){
     const latlng = await this.getLocation();
     this.apiServices.getDatosnombrecalles(latlng.lat,latlng.lng).subscribe((nombres:Welcome2)=>{
@@ -103,7 +102,6 @@ export class PosicionPage {
     });
   }
 
-  //obtener posicion actual
   private async getLocation() {
     //mapa 
     const rta = await this.geolocation.getCurrentPosition();
